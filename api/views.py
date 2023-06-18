@@ -8,6 +8,27 @@ from .permissions import IsSMorReadOnlyPermissions
 from datetime import date, timedelta
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.db import connection
+
+
+def filter_standup_cards_by_user(user):
+    user_team = user.synchron_user.team.id
+    return StandupCard.objects.raw(
+            'SELECT * FROM api_standupcard WHERE team_id = %s', [user_team]
+            )
+
+def filter_standup_cards_by_date(date):
+    return StandupCard.objects.raw(
+            'SELECT * FROM api_standupcard WHERE standup_date = %s', [date]
+            )
+
+def filter_standup_cards_by_user_and_date(user, date):
+    user_team = user.synchron_user.team.id
+    return StandupCard.objects.raw(
+            """SELECT * FROM api_standupcard 
+            WHERE team_id = %s 
+            AND standup_date = %s""", [user_team, date]
+            )
 
 
 class StandupCardViewSet(viewsets.ModelViewSet):
@@ -16,11 +37,13 @@ class StandupCardViewSet(viewsets.ModelViewSet):
     """
     def get_queryset(self):
         """ Filters standup cards according to team of user """
-        queryset = StandupCard.objects.all()
-        if self.request.user.is_superuser:
-            return queryset
-        user_team = self.request.user.synchron_user.team
-        queryset = StandupCard.objects.filter(team=user_team)
+        queryset = StandupCard.objects.raw(
+            'SELECT * FROM api_standupcard'
+            )
+        
+        if not self.request.user.is_superuser:
+            queryset = filter_standup_cards_by_user(self.request.user)
+
         return queryset
     
     serializer_class = StandupCardSerializer
@@ -34,11 +57,12 @@ class StandupCardByDateView(generics.ListAPIView):
     """
     def get_queryset(self):
         """ Filters standup cards according to query date and team of user """
-        queryset = StandupCard.objects.filter(standup_date=self.kwargs["date"])
-        if self.request.user.is_superuser:
-            return queryset
-        user_team = self.request.user.synchron_user.team
-        queryset = queryset.filter(team=user_team)
+        date = self.kwargs["date"]
+
+        queryset = filter_standup_cards_by_date(date)        
+        if not self.request.user.is_superuser:
+            queryset = filter_standup_cards_by_user_and_date(self.request.user, date)
+
         return queryset
         
     serializer_class = StandupCardSerializer
@@ -50,11 +74,12 @@ class StanupCardTodayView(generics.ListAPIView):
     """
     def get_queryset(self):
         """ Filters standup cards for present day according to date and team of user """
-        queryset = StandupCard.objects.filter(standup_date=date.today())
-        if self.request.user.is_superuser:
-            return queryset
-        user_team = self.request.user.synchron_user.team
-        queryset = queryset.filter(team=user_team)
+        date = date.today()
+
+        queryset = filter_standup_cards_by_date(date)        
+        if not self.request.user.is_superuser:
+            queryset = filter_standup_cards_by_user_and_date(self.request.user, date)
+
         return queryset
         
     serializer_class = StandupCardSerializer
@@ -66,12 +91,12 @@ class StanupCardYesterdayView(generics.ListAPIView):
     """
     def get_queryset(self):
         """ Filters standup cards for the last day according to date and team of user """
-        yesterday = date.today() - timedelta(1)
-        queryset = StandupCard.objects.filter(standup_date=yesterday)
-        if self.request.user.is_superuser:
-            return queryset
-        user_team = self.request.user.synchron_user.team
-        queryset = queryset.filter(team=user_team)
+        date = date.today() - timedelta(1)
+
+        queryset = filter_standup_cards_by_date(date)        
+        if not self.request.user.is_superuser:
+            queryset = filter_standup_cards_by_user_and_date(self.request.user, date)
+
         return queryset
         
     serializer_class = StandupCardSerializer
@@ -83,11 +108,26 @@ class StandupCardByMonthView(generics.ListAPIView):
     """
     def get_queryset(self):
         """ Filters standup cards according to queried month of year and team of user """
-        queryset = StandupCard.objects.filter(standup_date__year=self.kwargs['year'], standup_date__month=self.kwargs['month'])
-        if self.request.user.is_superuser:
-            return queryset
-        user_team = self.request.user.synchron_user.team
-        queryset = queryset.filter(team=user_team)
+        year = self.kwargs['year']
+        month = self.kwargs['month']
+
+        queryset = StandupCard.objects.raw(
+            """SELECT * FROM api_standupcard 
+            WHERE date_part('year', standup_date) = %s
+            AND date_part('month', standup_date) = %s""", 
+            [year, month]             
+            )
+        
+        if not self.request.user.is_superuser:
+            user_team = self.request.user.synchron_user.team.id
+            queryset = StandupCard.objects.raw(
+            """SELECT * FROM api_standupcard 
+            WHERE date_part('year', standup_date) = %s
+            AND date_part('month', standup_date) = %s
+            AND team_id = %s""", 
+            [year, month, user_team]             
+            )
+
         return queryset
         
     serializer_class = StandupCardSerializer
@@ -99,11 +139,21 @@ class StandupCardBySprintIDView(generics.ListAPIView):
     """
     def get_queryset(self):
         """ Filters standup cards according to query sprint ID and team of user """
-        queryset = StandupCard.objects.filter(sprint_id=self.kwargs['sprint_id'])
-        if self.request.user.is_superuser:
-            return queryset
-        user_team = self.request.user.synchron_user.team
-        queryset = queryset.filter(team=user_team)
+        sprint_id = self.kwargs['sprint_id']
+
+        queryset = StandupCard.objects.raw(
+            'SELECT * FROM api_standupcard WHERE sprint_id = %s', [sprint_id]             
+            )
+        
+        if not self.request.user.is_superuser:
+            user_team = self.request.user.synchron_user.team.id
+            queryset = StandupCard.objects.raw(
+            """SELECT * FROM api_standupcard 
+            WHERE sprint_id = %s
+            AND team_id = %s""", 
+            [sprint_id, user_team]             
+            )
+
         return queryset
         
     serializer_class = StandupCardSerializer
