@@ -52,17 +52,35 @@ class StandupCardSerializer(serializers.ModelSerializer):
         if not current_user.is_superuser:
             team = self.context['request'].user.synchron_user.team
 
-        # Create standup card instance
+        #----- Create standup card instance
         standup_card = StandupCard.objects.create(team=team, **validated_data)
 
-        # Create individual member update for standup card instances and relate with the standup card
-        for member in team.team_members.all():
-            if member.user.groups.filter(name='Scrum Member').exists():
-                for update_data in updates_data:
-                    if member == update_data.get('member'):
-                        IndividualCardUpdate.objects.create(standup_card=standup_card, **update_data)
-                    else:
-                        IndividualCardUpdate.objects.create(standup_card=standup_card, member=member, remarks="")
+        #----- Create individual member update for standup card instances and relate with the standup card
+
+        # No individual updates provided, set empty remarks for all members
+        if updates_data == []:
+            for member in team.team_members.all():
+                if member.user.groups.filter(name='Scrum Member').exists():
+                    # print("remarks created for ", member)
+                    IndividualCardUpdate.objects.create(standup_card=standup_card, member=member, remarks="")
+        
+        # Individual updates for all scrum members
+        elif len(updates_data)+1 == team.team_members.count():
+            for update_data in updates_data:
+                # print("remarks created for", update_data.get('member'))
+                IndividualCardUpdate.objects.create(standup_card=standup_card, **update_data)
+
+        # Individual updates for some scrum members
+        else:       
+            for member in team.team_members.all():
+                if member.user.groups.filter(name='Scrum Member').exists():
+                    for update_data in updates_data:
+                        if member == update_data.get('member'):
+                            # print("remarks created for ", member, update_data.get('remarks'))
+                            IndividualCardUpdate.objects.create(standup_card=standup_card, **update_data)
+                        else:
+                            # print("remarks created for ", member, "empty remarks")
+                            IndividualCardUpdate.objects.create(standup_card=standup_card, member=member, remarks="")   
     
         return standup_card
     

@@ -37,12 +37,17 @@ class StandupCardViewSet(viewsets.ModelViewSet):
     """
     def get_queryset(self):
         """ Filters standup cards according to team of user """
-        queryset = StandupCard.objects.raw(
-            'SELECT * FROM api_standupcard'
-            )
+        queryset = StandupCard.objects.all()
+        if self.request.user.is_superuser:
+            return queryset
+        user_team = self.request.user.synchron_user.team
+        queryset = StandupCard.objects.filter(team=user_team)
+        # queryset = StandupCard.objects.raw(
+        #     'SELECT * FROM api_standupcard'
+        #     )
         
-        if not self.request.user.is_superuser:
-            queryset = filter_standup_cards_by_user(self.request.user)
+        # if not self.request.user.is_superuser:
+        #     queryset = filter_standup_cards_by_user(self.request.user)
 
         return queryset
     
@@ -68,34 +73,34 @@ class StandupCardByDateView(generics.ListAPIView):
     serializer_class = StandupCardSerializer
 
 
-class StanupCardTodayView(generics.ListAPIView):
+class StandupCardTodayView(generics.ListAPIView):
     """
     A viewset for viewing today's standup card instances
     """
     def get_queryset(self):
         """ Filters standup cards for present day according to date and team of user """
-        date = date.today()
+        today_date = date.today()
 
-        queryset = filter_standup_cards_by_date(date)        
+        queryset = filter_standup_cards_by_date(today_date)        
         if not self.request.user.is_superuser:
-            queryset = filter_standup_cards_by_user_and_date(self.request.user, date)
+            queryset = filter_standup_cards_by_user_and_date(self.request.user, today_date)
 
         return queryset
         
     serializer_class = StandupCardSerializer
 
 
-class StanupCardYesterdayView(generics.ListAPIView):
+class StandupCardYesterdayView(generics.ListAPIView):
     """
     A viewset for viewing yesterday's standup card instances
     """
     def get_queryset(self):
         """ Filters standup cards for the last day according to date and team of user """
-        date = date.today() - timedelta(1)
+        yesterday_date = date.today() - timedelta(1)
 
-        queryset = filter_standup_cards_by_date(date)        
+        queryset = filter_standup_cards_by_date(yesterday_date)        
         if not self.request.user.is_superuser:
-            queryset = filter_standup_cards_by_user_and_date(self.request.user, date)
+            queryset = filter_standup_cards_by_user_and_date(self.request.user, yesterday_date)
 
         return queryset
         

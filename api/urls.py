@@ -15,8 +15,8 @@ router.register(r'standupcard', views.StandupCardViewSet, basename="standupcard"
 
 urlpatterns = [
     path(route='standupcard/by_date/<str:date>/', view=views.StandupCardByDateView.as_view()),
-    path(route='standupcard/today/', view=views.StanupCardTodayView.as_view()),
-    path(route='standupcard/yesterday/', view=views.StanupCardYesterdayView.as_view()),
+    path(route='standupcard/today/', view=views.StandupCardTodayView.as_view()),
+    path(route='standupcard/yesterday/', view=views.StandupCardYesterdayView.as_view()),
     path(route='standupcard/by_month/<int:year>/<int:month>/', view=views.StandupCardByMonthView.as_view()),
     path(route='standupcard/by_sprint_id/<str:sprint_id>/', view=views.StandupCardBySprintIDView.as_view()),
     path(route='', view=include(router.urls)),

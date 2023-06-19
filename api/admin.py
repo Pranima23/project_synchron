@@ -14,7 +14,7 @@ class SynchronuserAdmin(admin.ModelAdmin):
 
 @admin.register(models.StandupCard)
 class StandupCardAdmin(admin.ModelAdmin):
-    list_display = ('team', 'scrum_master', 'release_cycle', 'sprint_id')
+    list_display = ('id', 'team', 'scrum_master', 'release_cycle', 'sprint_id')
 
 
 admin.site.register(models.Position)
