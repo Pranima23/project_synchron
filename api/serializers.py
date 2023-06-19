@@ -8,9 +8,23 @@ class IndividualCardUpdateSerializer(serializers.ModelSerializer):
     A serializer to add remarks for individual members in a standup card
     """
     # member = serializers.SlugRelatedField(slug_field='user', read_only=True)
+    member_name = serializers.SerializerMethodField('_get_member_name')
+    member_position = serializers.SerializerMethodField('_get_member_position')
+
+    def _get_member_name(self, member_update_obj):
+        if member_update_obj.member is not None:
+            fname = member_update_obj.member.user.first_name
+            lname = member_update_obj.member.user.last_name
+            return f"{fname} {lname}"
+        
+    def _get_member_position(self, member_update_obj):
+        if member_update_obj.member is not None:
+            return member_update_obj.member.position.position_name
+            
+            
     class Meta:
         model = IndividualCardUpdate
-        fields = ['updated_at', 'member', 'remarks']  
+        fields = ['updated_at', 'member', 'member_name', 'member_position', 'remarks']  
 
 
 class StandupCardSerializer(serializers.ModelSerializer):
@@ -19,6 +33,7 @@ class StandupCardSerializer(serializers.ModelSerializer):
     """
     team = serializers.SlugRelatedField(slug_field='team_name', queryset=Team.objects.all())
     individual_updates = IndividualCardUpdateSerializer(many=True)
+
     
     
     class Meta:
@@ -41,9 +56,14 @@ class StandupCardSerializer(serializers.ModelSerializer):
         standup_card = StandupCard.objects.create(team=team, **validated_data)
 
         # Create individual member update for standup card instances and relate with the standup card
-        for update_data in updates_data:
-            IndividualCardUpdate.objects.create(standup_card=standup_card, **update_data)
-        
+        for member in team.team_members.all():
+            if member.user.groups.filter(name='Scrum Member').exists():
+                for update_data in updates_data:
+                    if member == update_data.get('member'):
+                        IndividualCardUpdate.objects.create(standup_card=standup_card, **update_data)
+                    else:
+                        IndividualCardUpdate.objects.create(standup_card=standup_card, member=member, remarks="")
+    
         return standup_card
     
     def update(self, instance, validated_data):

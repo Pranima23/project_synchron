@@ -74,4 +74,6 @@ class IndividualCardUpdate(models.Model):
     remarks = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.member.user.username} {self.remarks}"
+        if self.member is not None:
+            return f"{self.member.user.username} {self.remarks}"
+        return ""
