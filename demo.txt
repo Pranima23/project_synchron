@@ -1,0 +1,153 @@
+Two Teams:
+	1. Intern: 
+		surendra.kc(SM, 3), pranima.kansakar(4), krisha.shrestha(5)
+	2. Network Intelligence
+		shilpa.gorkhali(SM, 2), megha.bhattarai(6), irajan.shrestha(7)
+
+Groups: Scrum Master, Scrum Member
+
+Endpoints:
+	http://127.0.0.1:8000/api/token/
+	http://127.0.0.1:8000/api/token/refresh/
+	http://127.0.0.1:8000/api/standupcard/
+	http://127.0.0.1:8000/api/standupcard/59
+	http://127.0.0.1:8000/api/standupcard/today
+	http://127.0.0.1:8000/api/standupcard/yesterday
+	http://127.0.0.1:8000/api/standupcard/by_date/2023-06-16
+	http://127.0.0.1:8000/api/standupcard/by_month/2023/6
+	http://127.0.0.1:8000/api/standupcard/by_sprint_id/2
+
+1. Members can view standup cards of their own team, can not edit
+2. SM can edit and view standup cards of their own team
+3. Admin can edit and view standup cards of all teams
+
+
+-----------------Create Standup Card Test Cases for SM surendra.kc (Team Intern)
+
+Case 1: All correct info, remarks for all members
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 11,
+        "individual_updates": [
+            {
+                "member": 4,
+                "remarks": "test post"
+            },
+            {
+                "member": 5,
+                "remarks": "test post"
+            }
+        ],
+        "notes": "SM create standupcard test case 1"
+    }
+
+
+Case 2: All correct info, remarks for some member only
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 12,
+        "individual_updates": [
+            {
+                "member": 5,
+                "remarks": "test post"
+            }
+        ],
+        "notes": "SM create standupcard test case 2"
+    }
+
+
+Case 3: All correct info, no remarks
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 13,
+        "individual_updates": [],
+        "notes": "SM create standupcard test case 3"
+    }
+
+
+Case 4: Duplicate (release_cycle, sprint_id, team) pair
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 13,
+        "individual_updates": [],
+        "notes": "SM create standupcard test case 4"
+    }
+
+
+Case 5: Wrong team
+{
+        "team": "Network Intelligence",
+        "release_cycle": "5",
+        "sprint_id": 14,
+        "individual_updates": [
+            {
+                "member": 5,
+                "remarks": "test post"
+            }
+        ],
+        "notes": "SM create standupcard test"
+    }
+
+
+Case 6: Wrong member
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 15,
+        "individual_updates": [
+            {
+                "member": 6,
+                "remarks": "test post"
+            }
+        ],
+        "notes": "SM create standupcard test"
+    }
+
+
+
+
+---------------------Update Standup Card Test Cases for SM surendra.kc, Team Intern
+Case 1: Correct info
+Case 2: Duplicate (team, release_cycle, sprint_id) pair
+Case 3: Wrong member id
+
+
+
+---------------------Create Standup Card Test Cases for Superuser
+
+Case 1: All correct info
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 16,
+        "individual_updates": [
+            {
+                "member": 4,
+                "remarks": "test post"
+            },
+        ],
+        "notes": "Admin create standupcard test case 1"
+    }
+
+
+Case 2: Wrong member of team
+{
+        "team": "Intern",
+        "release_cycle": "5",
+        "sprint_id": 17,
+        "individual_updates": [
+            {
+                "member": 6,
+                "remarks": "test post"
+            }
+        ],
+        "notes": "Admin create standupcard test case 2"
+    }
+
+
+
+

@@ -1,0 +1,30 @@
+JWT Tokens
+megha.bhattarai, Scrum member, Team Network Intelligence
+{
+    "username": "megha.bhattarai",
+    "password": "notadmin"
+}
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4NzMwOTcyNywiaWF0IjoxNjg3MjIzMzI3LCJqdGkiOiIzNTA0OTNkM2RhNDQ0NDdjODFhNThhZTA5OWZhZmIwMiIsInVzZXJfaWQiOjZ9.aQO2K9vacFk6GbyhzOMl4lg2wKjKGKsJ2Zb8CQ2d4Ck",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg4MDg3MzI3LCJpYXQiOjE2ODcyMjMzMjcsImp0aSI6Ijk0OTBlMzY5NTkwNTQyOTJhZWFjMmYwNTI1NmIzZGM2IiwidXNlcl9pZCI6Nn0.Gvivft1AT3jB0vn1X804YkOQNRmF89oQ4Vk-vBzIK0A"
+}
+
+surendra.kc, Scrum Master, Team Intern
+{
+    "username": "surendra.kc",
+    "password": "notadmin"
+}
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4NzMwOTg2NiwiaWF0IjoxNjg3MjIzNDY2LCJqdGkiOiJkYjc3NTg1MmNkMjM0ZThmYmY1MjllMjI1YmEwYTNmMSIsInVzZXJfaWQiOjN9.7X63GGWxJy0Ev0HKaaDCwyx7K3Y_0f6PvkQ2f_VFHtQ",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg4MDg3NDY2LCJpYXQiOjE2ODcyMjM0NjYsImp0aSI6ImJlYmExNmVmMTI3NzQyMTA5NjcyOTgzZTIzMGQxYjkzIiwidXNlcl9pZCI6M30.IRfiiAhKkVRMJUgKmaPh4fcqhg1dlyCetbaYP2EKS-c"
+}
+
+Superuser
+{
+    "username": "admin",
+    "password": "admin"
+}
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4NzEwNDYxMywiaWF0IjoxNjg3MDE4MjEzLCJqdGkiOiJhYzgzMjQyMDgxNzk0OGY3YjNlODc2YWUyMTE5NTlhOCIsInVzZXJfaWQiOjF9.doG6zezHesD6Xt5Q759Di-pwCo3sXwqV9FJ_XBg6vGc",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg3ODgyMjEzLCJpYXQiOjE2ODcwMTgyMTMsImp0aSI6Ijg0ZWE2MjliMzQzNTRkODQ5ZmJhNGM2M2JhYjgwYzE4IiwidXNlcl9pZCI6MX0.SfWptKnfHPAu2580WsGvzz0_u9rdODxLf7KJWGZzP1s"
+}
